@@ -70,7 +70,7 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
         int mx = 0;
         int mi = 10000;
         int minn = 10000;
-        for (int j=0;j<contours.size();j++)
+        for (int j=0;j<contours[i].size();j++)
         {
            maxn = max(contours[i][j].y,maxn);
            mx = max (contours[i][j].x , mx );
@@ -98,7 +98,7 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
                     {
                         flag = true;
                     }
-                    flag = false;
+                    else flag = false;
                 }
                 if (flag)
                 {
@@ -118,7 +118,7 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
         if (!high.empty())
         {
             bool flag =1;
-            for(int j=0;j<=high.size();j++)
+            for(int j=0;j<high.size();j++)
             {
                 if (y[i]>high[j]-20 && y[i]<high[j] +20)
                 {
@@ -126,6 +126,11 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
                     flag =0;
                     break;
                 }
+            }
+            if (flag)
+            {
+                high.push_back(y[i]);
+                cnt.push_back(1);
             }
         }
         else{
@@ -147,13 +152,16 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
     vector<Point>retu;
     for (int i=0;i<x.size();i++)
     {
-        res.push_back(i);
-        rex.push_back(x[i]);
-        rey.push_back(y[i]);
-        retu.push_back(Point(x[i],y[i]));
+        if(high[mnui] + 20 > y[i] && high[mnui] -20 < y[i])
+        {
+            res.push_back(i);
+            rex.push_back(x[i]);
+            rey.push_back(y[i]);
+            retu.push_back(Point(x[i], y[i]));
+        }
     }
     sort(retu.begin(),retu.end(),cmp);
-    cout<<"after sorted:"<<retu.size();
+    cout<<"after sorted:"<<retu.size()<<endl;
     for(int i=0;i<retu.size();i++)
     {
         cout<<retu[i].x<<" "<<retu[i].y<<endl;
@@ -165,7 +173,7 @@ int main()
     Mat img;
     img = imread("/home/lr-2002/code/File_convert_cpp/test.jpg");
 
-    Point pt1(899,924);
+    Point pt1(899,890);
     Point pt2(240,89); // infact the pic of the rect
     cout << pt1.x<<endl;
     get_range_image(img ,pt1.x,pt2.x,pt1.y,pt2.y);
