@@ -39,6 +39,7 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
 
     //<editor-fold desc="change the image and get concrete contours info">
     Mat temp = img(Rect(x1, y1, x2, y2));
+    show(temp);
     Mat kernel = Mat::ones(Size(3,3),CV_8UC1);
     morphologyEx(temp,temp,MORPH_CLOSE,kernel);
     cvtColor(temp,temp,COLOR_BGR2GRAY); // convert temp into a gray image
@@ -49,11 +50,11 @@ void get_range_image(Mat &img,int x1,int x2,int y1,int y2) {
     Mat canny;
     Canny(dst,canny,1,200);
 //    Mat contours,hierarchy;
-    vector<vector<Point>> contours;
+    vector<vector<Point>> contours(1000);
     vector<Vec4i>hierarchy;
     findContours(canny,contours,hierarchy,RETR_CCOMP,CHAIN_APPROX_NONE);
-    drawContours(temp,contours,-1,(0,0,255),1);
-//    show(temp);
+    drawContours(img,contours,-1,(0,0,255),1);
+    show(img);
     //</editor-fold>
 
     //------------------------------------------------------------------------------------------
@@ -164,7 +165,9 @@ int main()
     Mat img;
     img = imread("/home/lr-2002/code/File_convert_cpp/test.jpg");
 
-
-    get_range_image(img ,0,1920,0,1080);
+    Point pt1(899,924);
+    Point pt2(240,89); // infact the pic of the rect
+    cout << pt1.x<<endl;
+    get_range_image(img ,pt1.x,pt2.x,pt1.y,pt2.y);
     return 0;
 }
